@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cornell AI Notebook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              paper: '#fdfbf7', // A slight off-white paper color
+              'paper-line': '#e5e7eb',
+              'cornell-red': '#ef4444',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Merriweather', 'serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Merriweather:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+      @media print {
+        @page {
+          size: A4;
+          margin: 1.5cm 2cm; /* Top/Bottom 1.5cm, Left/Right 2cm */
+        }
+        
+        /* Reset core elements for clean printing */
+        html, body {
+          height: auto !important;
+          overflow: visible !important;
+          background-color: white !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          font-size: 11pt; /* Optimal reading size */
+          line-height: 1.5;
+          color: #111 !important; /* True Black for sharpness */
+          -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Ensure the root div allows flow */
+        #root {
+          display: block !important;
+          position: relative !important;
+          width: 100% !important;
+          height: auto !important;
+          overflow: visible !important;
+        }
+
+        /* Typography Improvements for Paper */
+        p, li, dd {
+          text-align: justify;
+          hyphens: auto;
+          text-justify: inter-word;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            break-after: avoid;
+            page-break-after: avoid;
+        }
+        
+        img, svg, tr, blockquote {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        /* Utilities */
+        .no-print, .print\:hidden {
+          display: none !important;
+        }
+        
+        .print\:block {
+          display: block !important;
+        }
+
+        .page-break {
+          page-break-before: always;
+          break-before: page;
+          display: block;
+          height: 1px;
+        }
+
+        /* Cut lines for flashcards */
+        .cut-line {
+            border-style: dashed !important;
+            border-color: #9ca3af !important; /* Gray 400 */
+        }
+
+        /* Ensure colors print exactly as seen */
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+  <body class="bg-gray-100 text-gray-800 antialiased">
+    <div id="root"></div>
+  </body>
+</html>
