@@ -18,14 +18,20 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
   const editorRef = useRef<HTMLDivElement>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [isTocOpen, setIsTocOpen] = useState(true);
+  const isInitialized = useRef(false);
 
   // Initialize content ONLY on first load to prevent cursor jumping
   useEffect(() => {
-    if (editorRef.current && !editorRef.current.innerHTML && content) {
-      editorRef.current.innerHTML = content;
-      updateToc();
-    } else if (editorRef.current && content === '') {
-        editorRef.current.innerHTML = '<p><br></p>'; // Start with a paragraph
+    if (!editorRef.current) return;
+    
+    if (!isInitialized.current) {
+        if (content) {
+            editorRef.current.innerHTML = content;
+        } else {
+            editorRef.current.innerHTML = '<p><br></p>';
+        }
+        updateToc();
+        isInitialized.current = true;
     }
   }, []);
 
@@ -44,8 +50,6 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
   };
 
   const handleHighlight = (color: string) => {
-    // 'hiliteColor' uses background color. 
-    // We use hex codes that match Tailwind colors roughly.
     execCmd('hiliteColor', color);
   };
 
@@ -57,7 +61,6 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
     const items: TocItem[] = [];
     
     headers.forEach((header, index) => {
-      // Assign an ID if it doesn't have one for linking (though we use scrollIntoView mostly)
       if (!header.id) header.id = `section-${index}`;
       
       items.push({
@@ -75,13 +78,12 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // --- COLORS PALETTE ---
   const HIGHLIGHT_COLORS = [
-    { color: '#fef08a', label: 'Amarillo', border: 'border-yellow-400' }, // yellow-200
-    { color: '#bbf7d0', label: 'Verde', border: 'border-green-400' },   // green-200
-    { color: '#bfdbfe', label: 'Azul', border: 'border-blue-400' },    // blue-200
-    { color: '#fbcfe8', label: 'Rosa', border: 'border-pink-400' },    // pink-200
-    { color: '#fed7aa', label: 'Naranja', border: 'border-orange-400' }, // orange-200
+    { color: '#fef08a', label: 'Amarillo', border: 'border-yellow-400' },
+    { color: '#bbf7d0', label: 'Verde', border: 'border-green-400' },
+    { color: '#bfdbfe', label: 'Azul', border: 'border-blue-400' },
+    { color: '#fbcfe8', label: 'Rosa', border: 'border-pink-400' },
+    { color: '#fed7aa', label: 'Naranja', border: 'border-orange-400' },
   ];
 
   return (
@@ -109,7 +111,7 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
                 <div className="flex-1 overflow-y-auto p-2 space-y-1">
                     {toc.length === 0 ? (
                         <p className="text-xs text-gray-400 p-4 text-center italic">
-                            Usa los botones H1 y H2 para crear secciones en el índice.
+                            Usa los botones H1 y H2 para crear secciones.
                         </p>
                     ) : (
                         toc.map((item) => (
@@ -132,7 +134,6 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
         <div className="flex-1 flex flex-col min-w-0">
             {/* TOOLBAR */}
             <div className="p-2 border-b border-gray-100 flex flex-wrap items-center gap-2 bg-white sticky top-0 z-10">
-                {/* Headers */}
                 <div className="flex items-center bg-gray-100 rounded-lg p-1 gap-1">
                     <button onClick={() => execCmd('formatBlock', 'H1')} className="p-2 hover:bg-white hover:shadow rounded text-gray-700" title="Título Principal (H1)">
                         <Heading1 size={18}/>
@@ -147,7 +148,6 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
 
                 <div className="w-px h-6 bg-gray-200 mx-1"></div>
 
-                {/* Basics */}
                 <div className="flex items-center bg-gray-100 rounded-lg p-1 gap-1">
                     <button onClick={() => execCmd('bold')} className="p-2 hover:bg-white hover:shadow rounded text-gray-700 font-bold" title="Negrita">
                         B
@@ -162,7 +162,6 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
 
                 <div className="w-px h-6 bg-gray-200 mx-1"></div>
 
-                {/* Highlighters */}
                 <div className="flex items-center bg-gray-100 rounded-lg p-1 gap-1.5 px-3">
                     <Highlighter size={16} className="text-gray-400 mr-1"/>
                     {HIGHLIGHT_COLORS.map((c) => (
@@ -193,7 +192,6 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
                 </div>
             </div>
             
-            {/* Footer Status */}
             <div className="px-6 py-2 border-t border-gray-100 text-xs text-gray-400 flex justify-between">
                 <span>{topic}</span>
                 <span>Palabras: {content ? content.replace(/<[^>]*>/g, '').split(/\s+/).filter(w => w.length > 0).length : 0}</span>
@@ -205,8 +203,6 @@ export const ReadingSection: React.FC<ReadingSectionProps> = ({ content, topic, 
             .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
             .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
             .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
-            
-            /* Editor Styles Override */
             [contenteditable] h1 { margin-top: 1.5em; margin-bottom: 0.5em; color: #111; border-bottom: 2px solid #f3f4f6; padding-bottom: 0.2em; }
             [contenteditable] h2 { margin-top: 1.2em; margin-bottom: 0.5em; color: #374151; }
             [contenteditable] ul { list-style-type: disc; padding-left: 1.5em; }

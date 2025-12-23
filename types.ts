@@ -12,7 +12,6 @@ export interface QuizItem {
   question: string;
   answer: string;
   userAnswer?: string; // To store what the user types during study
-  aiFeedback?: string; // To store feedback given by AI
 }
 
 export interface Flashcard {
@@ -25,12 +24,6 @@ export interface Flashcard {
   easeFactor?: number; // Multiplier for the interval (standard start is 2.5)
   repetitions?: number;// How many times consecutively correct
   state?: 'new' | 'learning' | 'review' | 'relearning';
-}
-
-export interface ChatMessage {
-  role: 'user' | 'model';
-  text: string;
-  timestamp: number;
 }
 
 export interface KWLData {
@@ -50,10 +43,7 @@ export interface NotePage {
   references: Reference[];
   quiz: QuizItem[];
   flashcards: Flashcard[];
-  chatHistory: ChatMessage[];
   kwl: KWLData;
   solarSchema: string;
   createdAt: number;
 }
-
-export type GenerativeAction = 'summarize' | 'generate_cues' | 'format_notes' | 'generate_quiz' | 'generate_flashcards' | 'generate_solar' | 'generate_kwl';
